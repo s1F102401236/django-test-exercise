@@ -37,7 +37,7 @@ def detail(request, task_id):
 
 
 def delete(request, task_id):
-  try
+  try:
         task=Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
         raise Http404('Task does not exist')
