@@ -89,9 +89,10 @@ class CommentForm(forms.ModelForm):
 
 # 記事詳細とコメント投稿処理
 @login_required
-def task_detail(request, post_id):
+def task_detail(request, pk):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
+    task = get_object_or_404(Task, pk=pk)
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
