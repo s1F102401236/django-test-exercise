@@ -33,4 +33,10 @@ class Migration(migrations.Migration):
             name='title',
             field=models.CharField(max_length=200),
         ),
+
+        migrations.AddField(
+            model_name='task',
+            name='image',
+            field=models.ImageField(blank=True, null=True, upload_to='task_images/'),
+        ),
     ]

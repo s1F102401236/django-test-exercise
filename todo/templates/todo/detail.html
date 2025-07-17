@@ -22,19 +22,51 @@
       {% endif %}
     </ul>
 
+    {% if task.image %}
+    <div>
+      <img src="{{ task.image.url }}" alt="Task Image" style="max-width: 400px; height: auto;">
+    </div>
+    {% endif %}
+
     <div>
       <a href="{% url 'index' %}">Top</a>
       | <a href="{% url 'delete' task.id %}">Delete</a>
       | <a href="{% url 'update' task.id %}">Edit</a>
       <a href="{% url 'close' task.id %}">Close</a>
     </div>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+
+    <hr>
+    <h2>コメント</h2>
+    <ul>
+    {% for comment in comments %}
+      <li>
+        <strong>{{ comment.author.username }}</strong>: 
+        {{ comment.content }} 
+        <small>({{ comment.created_at|date:"Y-m-d H:i" }})</small>
+      </li>
+    {% empty %}
+      <li>コメントはまだありません。</li>
+    {% endfor %}
+    </ul>
+
+    {% if user.is_authenticated %}
+      <hr>
+      <h3>コメントを書く</h3>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">投稿</button>
+      </form>
+    {% else %}
+      <p><a href="{% url 'login' %}">ログイン</a>してコメントを投稿しましょう。</p>
+    {% endif %}
 
     <form action="{% url 'add_like' task.id %}" method="post" style="display:inline;">
       {% csrf_token %}
       <button type="submit">いいね ({{ task.likes_count }})</button>
     </form>
-
-    
   </body>
 
 </html>
