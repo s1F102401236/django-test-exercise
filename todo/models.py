@@ -13,3 +13,8 @@ class Task(models.Model):
         if self.due_at is None:
             return False
         return self.due_at < dt
+
+class Task(models.Model):
+    title = models.CharField(max_length=200)
+    posted_at = models.DateTimeField(auto_now_add=True)
+    likes_count = models.PositiveIntegerField(default=0)

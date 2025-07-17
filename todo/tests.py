@@ -2,6 +2,8 @@ from django.test import TestCase, Client
 from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
+from django.contrib.auth.models import User
+from .models import Post, Like
 
 # Create your tests here.
 
@@ -114,3 +116,19 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+class LikeModelTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser')
+        self.post = Post.objects.create(title='Test Post', content='Test content')
+
+    def test_user_can_like_post(self):
+        like = Like.objects.create(user=self.user, post=self.post)
+        self.assertEqual(Like.objects.count(), 1)
+        self.assertEqual(like.user, self.user)
+        self.assertEqual(like.post, self.post)
+
+    def test_user_cannot_like_same_post_twice(self):
+        Like.objects.create(user=self.user, post=self.post)
+        with self.assertRaises(Exception):
+            Like.objects.create(user=self.user, post=self.post)
