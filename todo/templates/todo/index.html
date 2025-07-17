@@ -11,7 +11,7 @@
   <body>
     <h1>Sample To Do Application</h1>
     <p>You can submit tasks from the following form.</p>
-    <form action="{% url 'index' %}" method="post">
+    <form action="{% url 'index' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div>
         <label for="titleInput">Title</label><br>
@@ -20,6 +20,10 @@
       <div>
         <label for="dueInput">Due at:</label><br>
         <input id="dueInput" name="due_at" type="datetime-local">
+      </div>
+      <div>
+        <label for="imageInput">Image (optional):</label><br>
+        <input id="imageInput" name="image" type="file" accept="image/*">
       </div>
       <div>
         <button type="submit">Submit</button>
@@ -34,7 +38,7 @@
 
     {% for task in tasks %}
     <div class="text">
-      <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a>"></h2>
+      <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></h2>
       <ul>
         <li>Posted at: {{ task.posted_at }}</li>
         {% if task.due_at %} 
@@ -44,6 +48,9 @@
         <li>Status: Completed</li>
         {% else %}
         <li>Status: Not Completed</li>
+        {% endif %}
+        {% if task.image %}
+        <li><img src="{{ task.image.url }}" alt="task image" width="200"></li>
         {% endif %}
       </ul>
     </div>

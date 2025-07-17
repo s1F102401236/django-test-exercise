@@ -22,6 +22,12 @@
       {% endif %}
     </ul>
 
+    {% if task.image %}
+    <div>
+      <img src="{{ task.image.url }}" alt="Task Image" style="max-width: 400px; height: auto;">
+    </div>
+    {% endif %}
+    
     <div>
       <a href="{% url 'index' %}">Top</a>
       | <a href="{% url 'delete' task.id %}">Delete</a>

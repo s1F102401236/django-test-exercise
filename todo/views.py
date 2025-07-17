@@ -9,9 +9,17 @@ from todo.models import Task
 
 def index(request):
     if request.method == 'POST':
+        due_at_raw = request.POST.get('due_at')
+        due_at = make_aware(parse_datetime(due_at_raw)) if due_at_raw else None
+        
         task = Task(title=request.POST['title'],
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
+        
+        if 'image' in request.FILES:
+            task.image = request.FILES['image']
+        
         task.save()
+        return redirect('index')
 
     if request.GET.get('order') == 'due':
         tasks = Task.objects.order_by('due_at')
