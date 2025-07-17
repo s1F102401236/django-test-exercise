@@ -3,7 +3,6 @@ from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
 from django.contrib.auth.models import User
-from .models import Post, Like
 
 # Create your tests here.
 
