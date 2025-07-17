@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
-
+from django.contrib.auth.models import User
 # Create your tests here.
 
 
@@ -114,3 +114,14 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+class TaskLikeTest(TestCase):
+    def test_like_increments_count(self):
+        task = Task.objects.create(title='Test Task')
+        self.assertEqual(task.likes_count, 0)
+
+        task.likes_count += 1
+        task.save()
+
+        task.refresh_from_db()
+        self.assertEqual(task.likes_count, 1)
