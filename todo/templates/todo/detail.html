@@ -34,6 +34,13 @@
       | <a href="{% url 'update' task.id %}">Edit</a>
       <a href="{% url 'close' task.id %}">Close</a>
     </div>
+
+    <form action="{% url 'add_like' task.id %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit">いいね ({{ task.likes_count }})</button>
+    </form>
+
+    
   </body>
 
 </html>
