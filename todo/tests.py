@@ -115,18 +115,13 @@ class TodoViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-class LikeModelTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='testuser')
-        self.post = Post.objects.create(title='Test Post', content='Test content')
+class TaskLikeTest(TestCase):
+    def test_like_increments_count(self):
+        task = Task.objects.create(title='Test Task')
+        self.assertEqual(task.likes_count, 0)
 
-    def test_user_can_like_post(self):
-        like = Like.objects.create(user=self.user, post=self.post)
-        self.assertEqual(Like.objects.count(), 1)
-        self.assertEqual(like.user, self.user)
-        self.assertEqual(like.post, self.post)
+        task.likes_count += 1
+        task.save()
 
-    def test_user_cannot_like_same_post_twice(self):
-        Like.objects.create(user=self.user, post=self.post)
-        with self.assertRaises(Exception):
-            Like.objects.create(user=self.user, post=self.post)
+        task.refresh_from_db()
+        self.assertEqual(task.likes_count, 1)
