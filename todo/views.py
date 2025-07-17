@@ -4,6 +4,10 @@ from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
 from todo.models import Task
 from .models import Task
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django import forms
+from .models import Post, Comment
 
 # Create your views here.
 
@@ -62,7 +66,35 @@ def update(request,task_id):
     }
     return render(request,'todo/edit.html',context)
 
- 
+# コメントフォームをここで定義
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+
+# 記事詳細とコメント投稿処理
+@login_required
+def post_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comments = post.comments.all()
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect('post_detail', post_id=post.id)
+    else:
+        form = CommentForm()
+
+    return render(request, 'blog/post_detail.html', {
+        'post': post,
+        'comments': comments,
+        'form': form
+    })
+
 def close(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)

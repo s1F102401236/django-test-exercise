@@ -3,6 +3,7 @@ from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
 from django.contrib.auth.models import User
+from .models import Post, Comment
 # Create your tests here.
 
 
@@ -125,3 +126,16 @@ class TaskLikeTest(TestCase):
 
         task.refresh_from_db()
         self.assertEqual(task.likes_count, 1)
+
+class CommentTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.post = Post.objects.create(title='Test Post', content='Test Content')
+
+    def test_comment_post(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(f'/post/{self.post.id}/', {
+            'content': 'これはテストコメントです'
+        })
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(Comment.objects.first().content, 'これはテストコメントです')
