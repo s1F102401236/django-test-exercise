@@ -5,6 +5,7 @@ from todo.models import Task
 from django.contrib.auth.models import User
 from .models import Post, Comment
 
+
 # Create your tests here.
 
 
@@ -129,3 +130,15 @@ class CommentTestCase(TestCase):
         })
         self.assertEqual(Comment.objects.count(), 1)
         self.assertEqual(Comment.objects.first().content, 'これはテストコメントです')
+        
+        
+class TaskLikeTest(TestCase):
+    def test_like_increments_count(self):
+        task = Task.objects.create(title='Test Task')
+        self.assertEqual(task.likes_count, 0)
+
+        task.likes_count += 1
+        task.save()
+
+        task.refresh_from_db()
+        self.assertEqual(task.likes_count, 1)

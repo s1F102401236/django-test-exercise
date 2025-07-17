@@ -24,7 +24,9 @@
 
     <div>
       <a href="{% url 'index' %}">Top</a>
+      | <a href="{% url 'delete' task.id %}">Delete</a>
       | <a href="{% url 'update' task.id %}">Edit</a>
+      <a href="{% url 'close' task.id %}">Close</a>
     </div>
     <h1>{{ post.title }}</h1>
     <p>{{ post.content }}</p>
@@ -54,6 +56,11 @@
     {% else %}
       <p><a href="{% url 'login' %}">ログイン</a>してコメントを投稿しましょう。</p>
     {% endif %}
+
+    <form action="{% url 'add_like' task.id %}" method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit">いいね ({{ task.likes_count }})</button>
+    </form>
   </body>
 
 </html>
