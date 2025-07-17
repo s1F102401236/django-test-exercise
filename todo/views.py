@@ -11,10 +11,9 @@ def index(request):
     if request.method == 'POST':
         due_at_raw = request.POST.get('due_at')
         due_at = make_aware(parse_datetime(due_at_raw)) if due_at_raw else None
-        
-        task = Task(title=request.POST['title'],
-                    due_at=make_aware(parse_datetime(request.POST['due_at'])))
-        
+
+        task = Task(title=request.POST['title'], due_at=make_aware(parse_datetime(request.POST['due_at'])))
+
         if 'image' in request.FILES:
             task.image = request.FILES['image']
         
