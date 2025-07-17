@@ -3,6 +3,9 @@ from django.utils import timezone
 from datetime import datetime
 from todo.models import Task
 from django.contrib.auth.models import User
+from .models import Post, Comment
+from django.utils.timezone import now
+from django.utils.dateparse import parse_datetime
 # Create your tests here.
 
 
@@ -64,13 +67,19 @@ class TodoViewTestCase(TestCase):
         self.assertEqual(response.templates[0].name, 'todo/index.html')
         self.assertEqual(len(response.context['tasks']), 0)
 
-    def test_index_post(self):
-        client = Client()
-        data = {'title': 'Test Task', 'due_at': '2024-06-30 23:59:59'}
-        response = client.post('/', data)
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.client.login(username='testuser', password='testpass')
 
+    def test_index_post(self):
+        due_at = now().isoformat()
+        response = self.client.post('/', {
+            'title': 'Test Task',
+            'due_at': due_at
+        }, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.templates[0].name, 'todo/index.html')
+        self.assertTemplateUsed(response, 'todo/index.html')
+        self.assertIn('tasks', response.context)
         self.assertEqual(len(response.context['tasks']), 1)
 
     def test_index_get_order_post(self):
@@ -114,6 +123,20 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+class CommentTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.post = Post.objects.create(title='Test Post', content='Test Content')
+
+    def test_comment_post(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.post(f'/post/{self.post.id}/', {
+            'content': 'これはテストコメントです'
+        })
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(Comment.objects.first().content, 'これはテストコメントです')
+
 
 class TaskLikeTest(TestCase):
     def test_like_increments_count(self):
