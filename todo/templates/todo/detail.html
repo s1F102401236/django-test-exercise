@@ -26,6 +26,34 @@
       <a href="{% url 'index' %}">Top</a>
       | <a href="{% url 'update' task.id %}">Edit</a>
     </div>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+
+    <hr>
+    <h2>コメント</h2>
+    <ul>
+    {% for comment in comments %}
+      <li>
+        <strong>{{ comment.author.username }}</strong>: 
+        {{ comment.content }} 
+        <small>({{ comment.created_at|date:"Y-m-d H:i" }})</small>
+      </li>
+    {% empty %}
+      <li>コメントはまだありません。</li>
+    {% endfor %}
+    </ul>
+
+    {% if user.is_authenticated %}
+      <hr>
+      <h3>コメントを書く</h3>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">投稿</button>
+      </form>
+    {% else %}
+      <p><a href="{% url 'login' %}">ログイン</a>してコメントを投稿しましょう。</p>
+    {% endif %}
   </body>
 
 </html>
