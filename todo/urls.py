@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
 
-app_name = 'todo'  # これが名前空間の宣言
+app_name = 'todo'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    # 他のパス
+    path('task/<int:pk>/like/', views.add_like, name='add_like'),
+    path('task/<int:pk>/', views.task_detail, name='task_detail'),
 ]

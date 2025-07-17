@@ -21,6 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from todo import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,8 +32,9 @@ urlpatterns = [
     path('<int:task_id>/close', todo_views.close, name='close'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('task/<int:task_id>/like/', views.add_like, name='add_like'),
-    path('post/<int:post_id>/', views.post_detail, name='post_detail'),
+    path('post/<int:pk>/', views.task_detail, name='task_detail'),
     path('', include('todo.urls', namespace='todo')),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

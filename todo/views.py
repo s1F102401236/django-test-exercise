@@ -89,7 +89,7 @@ class CommentForm(forms.ModelForm):
 
 # 記事詳細とコメント投稿処理
 @login_required
-def post_detail(request, post_id):
+def task_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
 
@@ -100,11 +100,11 @@ def post_detail(request, post_id):
             comment.post = post
             comment.author = request.user
             comment.save()
-            return redirect('post_detail', post_id=post.id)
+            return redirect('task_detail', post_id=post.id)
     else:
         form = CommentForm()
 
-    return render(request, 'blog/post_detail.html', {
+    return render(request, 'blog/task_detail.html', {
         'post': post,
         'comments': comments,
         'form': form
@@ -124,4 +124,4 @@ def add_like(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     task.likes_count += 1
     task.save()
-    return redirect('task_detail', task_id=task.id)
+    return redirect('todo:task_detail', pk=task.id)
